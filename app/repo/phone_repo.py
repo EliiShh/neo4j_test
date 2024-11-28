@@ -1,31 +1,31 @@
-from neo4j import Session
-
 from app.db.database import driver
-from app.db.models.device import Device
 
-def create_device(device: Device):
+def create_device(device):
     with driver.session() as session:
         query = (
-            "MERGE (d:Device {device_id: $device_id}) "
+            "MERGE (d:Device {id: $id}) "
             "SET d.name = $name, d.brand = $brand, d.model = $model, d.os = $os, "
             "d.latitude = $latitude, d.longitude = $longitude, "
             "d.altitude_meters = $altitude_meters, d.accuracy_meters = $accuracy_meters"
         )
-        params = {"device_id":device.device_id, "name":device.name, "brand":device.brand,
+        params = {"id":device.id, "name":device.name, "brand":device.brand,
                     "model":device.model, "os":device.os, "latitude":device.location.latitude,
                     "longitude":device.location.longitude, "altitude_meters":device.location.altitude_meters,
                     "accuracy_meters":device.location.accuracy_meters}
-        result = session.run(query, params).single()
-        print(result)
-        return result
+        session.run(query, params).single()
+        return device.id
 
-# def find_all_devices_connected_bluetooth(session: Session):
-#     query = (
-#         "MATCH (d1:Device)-[r:CONNECTED {method: 'Bluetooth'}]->(d2:Device) "
-#         "RETURN d1, r, d2"
-#     )
-#     return session.run(query).data()
-#
+def find_all_devices_connected_bluetooth():
+    with driver.session() as session:
+        query = (
+            "MATCH (d1:Device)-[r:CONNECTED {method: 'Bluetooth'}]->(d2:Device) "
+            "RETURN d1, r, d2"
+        )
+        return session.run(query).data()
+
+
+print(find_all_devices_connected_bluetooth())
+
 # def find_devices_stronger_signal(session: Session, signal_strength: int):
 #     query = (
 #         "MATCH (d1:Device)-[r:CONNECTED]->(d2:Device) "

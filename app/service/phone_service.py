@@ -1,45 +1,26 @@
-from app.db.models.device import Device, Location
+from app.db.models import Device, Location, Interaction
 from app.repo.phone_repo import create_device
 
 
-def insert_data(data: dict):
-    devices = [Device(**d, location=Location(**d["location"])) for d in data["devices"]]
-    if devices[0].device_id == devices[1].device_id:
+def insert_devices(devices: list):
+    devices = [Device(**{**d, "location": Location(**d["location"])}) for d in devices]
+
+    if devices[0].id == devices[1].id:
         return {"error": "the devices them equal"}
-    [create_device(device) for device in devices]
+    ids= [create_device(device) for device in devices]
+
+    return {"status": f"add {ids}"}
 
 
+data = {'devices': [
+    {'id': '3e269103-04d7-4da8-b07c-add259921744', 'name': 'Jackson', 'brand': 'Jenkins, Davis and Patton',
+     'model': 'Hear Product', 'os': 'KeepOS 6.5',
+     'location': {'latitude': 74.43674, 'longitude': 166.944776, 'altitude_meters': 2560, 'accuracy_meters': 46}},
+    {'id': 'd4c05640-83f7-4a8d-a924-5ec8d3b058c8', 'name': 'Kelly', 'brand': 'Curry LLC', 'model': 'During Already',
+     'os': 'EverOS 8.7',
+     'location': {'latitude': 12.0805925, 'longitude': 72.762496, 'altitude_meters': 4140, 'accuracy_meters': 8}}],
+       'interaction': {'from_device': '3e269103-04d7-4da8-b07c-add259921744',
+                       'to_device': 'd4c05640-83f7-4a8d-a924-5ec8d3b058c8', 'method': 'WiFi',
+                       'bluetooth_version': '5.3', 'signal_strength_dbm': -54, 'distance_meters': 14.31,
+                       'duration_seconds': 184, 'timestamp': '2018-05-07T17:44:04'}}
 
-
-
-
-
-
-{'devices':
-     [{'id': 'aebf8705-ee7f-4508-96bd-cfc513c2aba4',
-       'name': 'Anthony', 'brand': 'Ford and Sons',
-       'model': 'Spend Return',
-       'os': 'InternationalOS 14.3',
-       'location': {'latitude': -54.667791,
-                    'longitude': 127.672628,
-                    'altitude_meters': 3818,
-                    'accuracy_meters': 4}
-       },
-      {'id': 'aee32a7c-b725-4812-84e3-446694253c75',
-       'name': 'Lisa', 'brand': 'Robles-Morrow',
-       'model': 'Within Ever',
-       'os': 'ReturnOS 14.8',
-       'location': {'latitude': 89.4800265,
-                    'longitude': 134.910672,
-                    'altitude_meters': 1138,
-                    'accuracy_meters': 5}
-       }
-     ],
- 'interaction': {'from_device': 'aebf8705-ee7f-4508-96bd-cfc513c2aba4',
-                 'to_device': 'aee32a7c-b725-4812-84e3-446694253c75',
-                 'method': 'NFC', 'bluetooth_version': '4.3',
-                 'signal_strength_dbm': -40,
-                 'distance_meters': 14.48,
-                 'duration_seconds': 121,
-                 'timestamp': '2019-09-11T20:11:58'}
-}

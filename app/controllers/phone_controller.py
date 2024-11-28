@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from app.service.interaction_service import insert_interaction
+from app.service.phone_service import insert_devices
 
 
 phone_blueprint = Blueprint("phone", __name__)
@@ -10,14 +12,27 @@ phone_blueprint = Blueprint("phone", __name__)
 def get_interaction():
    print(request.json)
    data = request.get_json()
-   location = data.pop('location')
-   device = Device(**data, location=Location(**location))
-   create_device()
-   return jsonify({}), 200
+   res_devices = insert_devices(data["devices"])
+   res_interaction = insert_interaction(data["interaction"])
+   return jsonify({"devices": res_devices, "interaction": res_interaction}), 201
 
 
 
+# MATCH (start:Device)
+# MATCH (end:Device)
+# WHERE start <> end
+# MATCH path = shortestPath((start)-[:INTERACTED_WITH*]->(end))
+# WHERE ALL(r IN relationships(path) WHERE r.method = 'Bluetooth')
+# WITH path, length(path) as pathLength
+# ORDER BY pathLength DESC
+# LIMIT 1
+# RETURN path
 #
+
+
+
+
+
 # device_blueprint = Blueprint('device', __name__)
 #
 # @device_blueprint.route('/api/devices', methods=['POST'])

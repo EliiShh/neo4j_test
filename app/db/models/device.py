@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from app.db.models import Location
+from .location import Location
 
 @dataclass
 class Device:
-    device_id: str
+    id: str
     name: str
     brand: str
     model: str
