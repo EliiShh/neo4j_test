@@ -1,5 +1,5 @@
 from app.db.models import Interaction
-from app.repo.interaction_repo import create_interaction
+from app.repo.interaction_repo import create_interaction, find_all_devices_connected_bluetooth
 
 
 def insert_interaction(interaction: dict):
@@ -7,6 +7,7 @@ def insert_interaction(interaction: dict):
     status = create_interaction(interaction_to_neo)
     return {"status": status}
 
+def devices_connected_bluetooth_service():
 
 
 data = {'devices': [

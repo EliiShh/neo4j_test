@@ -15,3 +15,20 @@ def create_interaction(interaction: Interaction):
                     signal_strength_dbm=interaction.signal_strength_dbm, distance_meters=interaction.distance_meters,
                     duration_seconds=interaction.duration_seconds, timestamp=interaction.timestamp)
         return "created"
+
+
+def find_all_devices_connected_bluetooth():
+    with driver.session() as session:
+        query = ("""
+            match (start:Device)
+            match (end:Device)
+            where start <> end
+            match path = shortestPath((start)-[:CONNECTED*]->(end))
+            where ALL(r IN relationships(path) WHERE r.method = 'Bluetooth')
+            with path, length(path) as pathLength
+            order by pathLength DESC
+            limit 1
+            return path
+            """
+        )
+        return session.run(query).data()

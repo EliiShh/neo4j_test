@@ -15,22 +15,7 @@ def create_device(device):
         session.run(query, params).single()
         return device.id
 
-def find_all_devices_connected_bluetooth():
-    with driver.session() as session:
-        query = ("""
-            MATCH (start:Device)
-            MATCH (end:Device)
-            WHERE start <> end
-            MATCH path = shortestPath((start)-[:CONNECTED*]->(end))
-            WHERE ALL(r IN relationships(path) WHERE r.method = 'Bluetooth')
-            WITH path, length(path) as pathLength
-            ORDER BY pathLength DESC
-            LIMIT 1
-            RETURN path
-            """
-        )
-        return session.run(query).data()
-print(find_all_devices_connected_bluetooth())
+
 
 # MATCH (start:Device)
 # MATCH (end:Device)
