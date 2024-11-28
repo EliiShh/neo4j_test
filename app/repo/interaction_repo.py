@@ -32,3 +32,13 @@ def find_all_devices_connected_bluetooth():
             """
         )
         return session.run(query).data()
+
+
+def find_devices_stronger_signal(signal_strength: int):
+    with driver.session() as session:
+        query = (
+            "MATCH (d1:Device)-[r:CONNECTED]->(d2:Device) "
+            "WHERE r.signal_strength_dbm > $signal_strength "
+            "RETURN d1, r, d2"
+        )
+        return session.run(query, signal_strength=signal_strength).data()
