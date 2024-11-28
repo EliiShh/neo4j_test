@@ -18,16 +18,7 @@ def get_interaction():
 
 
 
-# MATCH (start:Device)
-# MATCH (end:Device)
-# WHERE start <> end
-# MATCH path = shortestPath((start)-[:INTERACTED_WITH*]->(end))
-# WHERE ALL(r IN relationships(path) WHERE r.method = 'Bluetooth')
-# WITH path, length(path) as pathLength
-# ORDER BY pathLength DESC
-# LIMIT 1
-# RETURN path
-#
+
 
 
 

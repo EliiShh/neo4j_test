@@ -17,14 +17,34 @@ def create_device(device):
 
 def find_all_devices_connected_bluetooth():
     with driver.session() as session:
-        query = (
-            "MATCH (d1:Device)-[r:CONNECTED {method: 'Bluetooth'}]->(d2:Device) "
-            "RETURN d1, r, d2"
+        query = ("""
+            MATCH (start:Device)
+            MATCH (end:Device)
+            WHERE start <> end
+            MATCH path = shortestPath((start)-[:CONNECTED*]->(end))
+            WHERE ALL(r IN relationships(path) WHERE r.method = 'Bluetooth')
+            WITH path, length(path) as pathLength
+            ORDER BY pathLength DESC
+            LIMIT 1
+            RETURN path
+            """
         )
         return session.run(query).data()
-
-
 print(find_all_devices_connected_bluetooth())
+
+# MATCH (start:Device)
+# MATCH (end:Device)
+# WHERE start <> end
+# MATCH path = shortestPath((start)-[:INTERACTED_WITH*]->(end))
+# WHERE ALL(r IN relationships(path) WHERE r.method = 'Bluetooth')
+# WITH path, length(path) as pathLength
+# ORDER BY pathLength DESC
+# LIMIT 1
+# RETURN path
+
+
+
+
 
 # def find_devices_stronger_signal(session: Session, signal_strength: int):
 #     query = (
